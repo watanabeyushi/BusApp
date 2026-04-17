@@ -1,5 +1,6 @@
 package com.busapp.web;
 
+import com.busapp.entity.TripDirection;
 import com.busapp.service.NextBusService;
 import com.busapp.web.dto.NextBusResponse;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +22,10 @@ public class NextBusController {
     @GetMapping("/next")
     public ResponseEntity<NextBusResponse> next(
             @RequestParam String routeId,
-            @RequestParam String stopId) {
-        return nextBusService.findNext(routeId, stopId)
+            @RequestParam String boardingStopId,
+            @RequestParam String destinationStopId,
+            @RequestParam TripDirection direction) {
+        return nextBusService.findNext(routeId, boardingStopId, destinationStopId, direction)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

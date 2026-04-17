@@ -2,26 +2,23 @@ package com.busapp.repository;
 
 import com.busapp.entity.BusSchedule;
 import com.busapp.entity.DayType;
+import com.busapp.entity.TripDirection;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface BusScheduleRepository extends JpaRepository<BusSchedule, Long> {
 
-    @Query("""
-            SELECT b FROM BusSchedule b
-            WHERE b.routeId = :routeId
-              AND b.stopId = :stopId
-              AND b.departureTime > :after
-              AND b.dayType IN :dayTypes
-            ORDER BY b.departureTime ASC
-            """)
-    List<BusSchedule> findNextDepartures(
-            @Param("routeId") String routeId,
-            @Param("stopId") String stopId,
-            @Param("after") LocalTime after,
-            @Param("dayTypes") List<DayType> dayTypes);
+    List<BusSchedule> findByRouteIdAndTripDirectionAndStopIdAndDepartureTimeAfterAndDayTypeInOrderByDepartureTimeAsc(
+            String routeId,
+            TripDirection tripDirection,
+            String stopId,
+            LocalTime after,
+            List<DayType> dayTypes);
+
+    Optional<BusSchedule> findByTripIdAndStopId(Long tripId, String stopId);
+
+    List<BusSchedule> findByRouteIdAndTripDirectionOrderByStopSequenceAsc(String routeId, TripDirection tripDirection);
 }
